@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:fitness_video_player/video_players/view_video.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerPage extends StatefulWidget {
@@ -7,16 +11,22 @@ class VideoPlayerPage extends StatefulWidget {
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> {
-  List<String> _vids = ["boxing","heavy_lefting","jogging","lefting","cardio","cardio2"];
+  List<String> _vids = ["boxing","heavy_lefting","jogging","lefting","relaxition","training"];
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 24) / 4;
     final double itemWidth = size.width / 2;
-
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Video Playlist",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        shadowColor: Colors.grey.shade100,
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: GridView.count(
           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
@@ -53,13 +63,13 @@ class _CurrentVideoState extends State<CurrentVideo> {
     super.initState();
     _controller = VideoPlayerController.asset("assets/videos/${widget.video}.mp4")
       ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
       });
   }
 
   @override
   void dispose() {
+    // TODO: implement dispose
     _controller!.dispose();
     super.dispose();
   }
@@ -74,19 +84,24 @@ class _CurrentVideoState extends State<CurrentVideo> {
       child: _controller!.value.isInitialized
           ? Stack(
             children: [
-              Center(
-                child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: SizedBox(
-                  width: _controller!.value.size.width,
-                  height: _controller!.value.size.height,
-                  child: VideoPlayer(_controller!,)),
-                        ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ViewVideo(controller: _controller!)),
+                  );
+                },
+                child: Center(
+                  child: AspectRatio(
+                                aspectRatio: _controller!.value.aspectRatio,
+                                child: VideoPlayer(_controller!),
+                              ),
+                ),
               ),
               Center(child: Icon(Icons.play_circle_outline_rounded,color: Colors.teal,size: 30,))
             ],
           )
-          : CircularProgressIndicator(color: Colors.teal,),
+          : Center(child: CircularProgressIndicator(color: Colors.teal,))
     );
   }
 }
