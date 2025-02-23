@@ -1,7 +1,5 @@
-import 'package:fitness_video_player/video_players/video_player.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:async';
+import 'landing_page.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -13,10 +11,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => VideoPlayerPage()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LandingPage()),
+        );
+      }
     });
   }
 
@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey[900],
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -33,10 +33,17 @@ class _SplashScreenState extends State<SplashScreen> {
               color: Colors.tealAccent,
               size: 120.0,
             ),
-            SizedBox(
-              height: 130,
+            SizedBox(height: 10),
+            Text(
+              "Skill Share",
+              style: TextStyle(
+                color: Colors.tealAccent,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            CircularProgressIndicator(color: Colors.teal,)
+            SizedBox(height: 130),
+            CircularProgressIndicator(color: Colors.teal),
           ],
         ),
       ),
